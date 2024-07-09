@@ -2,8 +2,11 @@ import "./index.scss";
 import { Card, Form, Input, Button } from "antd";
 import logo from "@/assets/images/logo.png";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { fetchLogin } from "@/store/modules/user";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const validatePhoneNumber = (value) => {
     if (!value) {
       return {
@@ -39,11 +42,11 @@ const Login = () => {
 
   // 手机号
   const [phoneNumber, setPhoneNumber] = useState({
-    value: "",
+    value: "13800000002",
   });
   // 验证码
   const [code, setCode] = useState({
-    value: "",
+    value: "246810",
   });
 
   const handleBlur = (field, validator, setter) => {
@@ -53,7 +56,7 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // 校验
     setPhoneNumber((preState) => ({
       ...preState,
@@ -69,7 +72,8 @@ const Login = () => {
     ) {
       return;
     } else {
-      console.log("登录成功");
+      // 登录
+      dispatch(fetchLogin({ mobile: phoneNumber.value, code: code.value }));
     }
   };
   return (
@@ -98,6 +102,7 @@ const Login = () => {
             <Input
               size="large"
               placeholder="请输入验证码"
+              value={code.value}
               onChange={(e) => setCode({ ...code, value: e.target.value })}
               onBlur={() => handleBlur(code, validateCode, setCode)}
               maxLength={6}

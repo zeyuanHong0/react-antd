@@ -8,7 +8,7 @@ const userStore = createSlice({
   },
   reducers: {
     setToken(state, action) {
-      state.userInfo = action.payload;
+      state.token = action.payload;
     },
   },
 });
