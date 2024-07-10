@@ -2,14 +2,22 @@ import "./index.scss";
 import { Card, Form, Input, Button, message } from "antd";
 import logo from "@/assets/images/logo.png";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { fetchLogin } from "@/store/modules/user";
 
 //phone:13800000002  code:246810
 
 const Login = () => {
   const dispatch = useDispatch();
-  const onFinish = (formValue) => {
-    dispatch(fetchLogin(formValue));
+  const navigate = useNavigate();
+  const onFinish = async (formValue) => {
+    try {
+      await dispatch(fetchLogin(formValue));
+      message.success("登录成功");
+      navigate("/index");
+    } catch (error) {
+      message.error("登录失败，请重试");
+    }
   };
   return (
     <div className="login">
