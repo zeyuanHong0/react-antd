@@ -4,11 +4,12 @@ import { http } from "@/utils";
 const userStore = createSlice({
   name: "user",
   initialState: {
-    token: "",
+    token: sessionStorage.getItem("token") || "",
   },
   reducers: {
     setToken(state, action) {
       state.token = action.payload;
+      sessionStorage.setItem("token", action.payload);
     },
   },
 });
