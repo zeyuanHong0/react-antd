@@ -4,11 +4,11 @@ import Login from "@/pages/login";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/login",
     element: <Login />,
   },
   {
-    path: "/index",
+    path: "/",
     element: <Layout />,
   },
 ]);
