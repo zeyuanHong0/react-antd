@@ -14,7 +14,7 @@ const Login = () => {
     try {
       await dispatch(fetchLogin(formValue));
       message.success("登录成功");
-      navigate("/index");
+      navigate("/");
     } catch (error) {
       message.error("登录失败，请重试");
     }
