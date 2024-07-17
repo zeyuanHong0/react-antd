@@ -6,7 +6,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import "./index.scss";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 
 const { Header, Sider } = Layout;
 
@@ -30,15 +30,18 @@ const items = [
 
 const GeekLayout = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  console.log(pathname);
   const onMenuClick = (route) => {
     navigate(route.key);
   };
+
   return (
     <Layout>
       <Header className="header">
         <div className="logo" />
         <div className="user-info">
-          <span className="user-name">柴柴老师</span>
+          <span className="user-name">哲理源</span>
           <span className="user-logout">
             <Popconfirm title="是否确认退出？" okText="退出" cancelText="取消">
               <LogoutOutlined /> 退出
@@ -51,7 +54,7 @@ const GeekLayout = () => {
           <Menu
             mode="inline"
             theme="dark"
-            defaultSelectedKeys={["1"]}
+            selectedKeys={[pathname]}
             items={items}
             style={{ height: "100%", borderRight: 0 }}
             onClick={onMenuClick}
