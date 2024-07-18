@@ -1,5 +1,6 @@
 import axios from "axios";
-import { getToken } from "@/utils";
+import { getToken, removeToken } from "@/utils";
+import { useNavigate } from "react-router-dom";
 
 const http = axios.create({
   baseURL: "http://geek.itheima.net/v1_0",
@@ -26,6 +27,11 @@ http.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    const navigate = useNavigate();
+    if (error.response.status === 401) {
+      removeToken();
+      navigate("/login", { replace: true });
+    }
     return Promise.reject(error);
   }
 );
