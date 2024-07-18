@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { http, setToken as _setToken, getToken } from "@/utils";
+import { http, setToken as _setToken, getToken, removeToken } from "@/utils";
 
 const userStore = createSlice({
   name: "user",
@@ -15,10 +15,15 @@ const userStore = createSlice({
     setUserInfo(state, action) {
       state.userInfo = action.payload;
     },
+    removeUser(state) {
+      state.token = "";
+      state.userInfo = {};
+      removeToken();
+    },
   },
 });
 
-export const { setToken, setUserInfo } = userStore.actions;
+export const { setToken, setUserInfo, removeUser } = userStore.actions;
 
 export const fetchLogin = (loginForm) => {
   return async (dispatch) => {
