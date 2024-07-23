@@ -1,3 +1,5 @@
+import "./index.scss";
+import { useState } from "react";
 import {
   Card,
   Breadcrumb,
@@ -11,11 +13,15 @@ import {
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import "./index.scss";
+import Editor from "@/components/editor";
 
 const { Option } = Select;
 
 const Publish = () => {
+  const [content, setContent] = useState(""); // 富文本
+  const getHtml = (htmlStr) => {
+    setContent(htmlStr);
+  };
   return (
     <div className="publish">
       <Card
@@ -53,7 +59,9 @@ const Publish = () => {
             label="内容"
             name="content"
             rules={[{ required: true, message: "请输入文章内容" }]}
-          ></Form.Item>
+          >
+            <Editor getHtml={getHtml} />
+          </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
