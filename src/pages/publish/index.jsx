@@ -1,5 +1,5 @@
 import "./index.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   Breadcrumb,
@@ -10,18 +10,33 @@ import {
   Upload,
   Space,
   Select,
+  message,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import Editor from "@/components/editor";
-
-const { Option } = Select;
+import { fetchGetChannels } from "@/api/article";
 
 const Publish = () => {
   const [content, setContent] = useState(""); // 富文本
+  const [channelSelectList, setChannelSelectList] = useState([]);
   const getHtml = (htmlStr) => {
     setContent(htmlStr);
   };
+
+  // 获取频道下拉列表
+  const handleGetChannels = async () => {
+    try {
+      const res = await fetchGetChannels();
+      setChannelSelectList(res.data.channels);
+    } catch (error) {
+      message.error("获取频道列表失败");
+    }
+  };
+
+  useEffect(() => {
+    handleGetChannels();
+  }, []);
   return (
     <div className="publish">
       <Card
@@ -51,9 +66,12 @@ const Publish = () => {
             name="channel_id"
             rules={[{ required: true, message: "请选择文章频道" }]}
           >
-            <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-              <Option value={0}>推荐</Option>
-            </Select>
+            <Select
+              placeholder="请选择文章频道"
+              style={{ width: 400 }}
+              options={channelSelectList}
+              fieldNames={{ label: "name", value: "id" }}
+            />
           </Form.Item>
           <Form.Item
             label="内容"
