@@ -18,10 +18,14 @@ import Editor from "@/components/editor";
 import { fetchGetChannels } from "@/api/article";
 
 const Publish = () => {
-  const [content, setContent] = useState(""); // 富文本
+  const [form] = Form.useForm();
   const [channelSelectList, setChannelSelectList] = useState([]);
-  const getHtml = (htmlStr) => {
-    setContent(htmlStr);
+  const handleEditorChange = (htmlStr) => {
+    form.setFieldsValue({ content: htmlStr });
+  };
+
+  const handleFinish = (formValue) => {
+    console.log(formValue);
   };
 
   // 获取频道下拉列表
@@ -53,6 +57,8 @@ const Publish = () => {
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ type: 1 }}
+          form={form}
+          onFinish={handleFinish}
         >
           <Form.Item
             label="标题"
@@ -78,7 +84,7 @@ const Publish = () => {
             name="content"
             rules={[{ required: true, message: "请输入文章内容" }]}
           >
-            <Editor getHtml={getHtml} />
+            <Editor getHtml={handleEditorChange} />
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 4 }}>

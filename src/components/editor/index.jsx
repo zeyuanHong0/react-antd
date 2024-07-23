@@ -24,7 +24,11 @@ const MyEditor = ({ getHtml }) => {
 
   const handleSetHtml = (editor) => {
     setHtml(editor.getHtml());
-    getHtml(editor.getHtml());
+    getHtml(
+      editor.isEmpty() || editor.getText().trim().length === 0
+        ? ""
+        : editor.getHtml()
+    );
   };
   return (
     <>
