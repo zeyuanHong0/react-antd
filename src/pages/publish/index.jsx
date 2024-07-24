@@ -15,7 +15,7 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import Editor from "@/components/editor";
-import { fetchGetChannels } from "@/api/article";
+import { fetchGetChannels, fetchSubmitArticle } from "@/api/article";
 
 const Publish = () => {
   const [form] = Form.useForm();
@@ -24,8 +24,25 @@ const Publish = () => {
     form.setFieldsValue({ content: htmlStr });
   };
 
-  const handleFinish = (formValue) => {
+  const handleFinish = async (formValue) => {
     console.log(formValue);
+    const data = {
+      ...formValue,
+      cover: {
+        type: 0,
+        images: [],
+      },
+    };
+    try {
+      const res = await fetchSubmitArticle(data);
+      if (res.message === "OK") {
+        message.success("发布文章成功");
+      } else {
+        message.error(`${res.message}`);
+      }
+    } catch (error) {
+      message.error("发布文章失败");
+    }
   };
 
   // 获取频道下拉列表
