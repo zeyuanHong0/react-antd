@@ -45,7 +45,7 @@ const MyEditor = ({ getHtml }) => {
           onCreated={setEditor}
           onChange={(editor) => handleSetHtml(editor)}
           mode="default"
-          style={{ height: "400px", overflowY: "hidden" }}
+          style={{ height: "300px", overflowY: "hidden" }}
         />
       </div>
     </>

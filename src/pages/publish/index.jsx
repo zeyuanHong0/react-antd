@@ -7,14 +7,13 @@ import {
   Button,
   Radio,
   Input,
-  Upload,
   Space,
   Select,
   message,
 } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import Editor from "@/components/editor";
+import Uploader from "@/components/uploader";
 import { fetchGetChannels, fetchSubmitArticle } from "@/api/article";
 
 const Publish = () => {
@@ -95,6 +94,16 @@ const Publish = () => {
               options={channelSelectList}
               fieldNames={{ label: "name", value: "id" }}
             />
+          </Form.Item>
+          <Form.Item label="封面">
+            <Form.Item name="type">
+              <Radio.Group>
+                <Radio value={1}>单图</Radio>
+                <Radio value={3}>三图</Radio>
+                <Radio value={0}>无图</Radio>
+              </Radio.Group>
+            </Form.Item>
+            <Uploader name="image" fileChange={fileChange} />
           </Form.Item>
           <Form.Item
             label="内容"
