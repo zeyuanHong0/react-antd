@@ -46,10 +46,13 @@ const Publish = () => {
 
   const [coverType, setCoverType] = useState(1);
   const coverTypeChange = (e) => {
-    setCoverType(e.target.value);
+    const type = e.target.value;
+    setCoverType(type);
   };
 
-  const fileChange = () => {};
+  const fileChange = (imageList) => {
+    form.setFieldsValue({ image: imageList });
+  };
 
   // 获取频道下拉列表
   const handleGetChannels = async () => {
@@ -110,7 +113,13 @@ const Publish = () => {
                 <Radio value={0}>无图</Radio>
               </Radio.Group>
             </Form.Item>
-            {coverType > 0 && <Uploader name="image" fileChange={fileChange} />}
+            {coverType > 0 && (
+              <Uploader
+                name="image"
+                fileChange={fileChange}
+                coverType={coverType}
+              />
+            )}
           </Form.Item>
           <Form.Item
             label="内容"

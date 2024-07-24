@@ -2,10 +2,21 @@ import "./index.scss";
 import { Upload, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { fetchUploadImg } from "@/api/article";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
-const Uploader = () => {
+const Uploader = ({ coverType, fileChange }) => {
   const [fileList, setFileList] = useState([]);
+  const cacheImageList = useRef([]); // 缓存图片列表
+
+  useEffect(() => {
+    if (coverType === 1) {
+      const imgList = cacheImageList.current.slice(0, 1);
+      setFileList(imgList);
+    } else if (coverType === 3) {
+      const imgList = cacheImageList.current.slice(0, 3);
+      setFileList(imgList);
+    }
+  }, [coverType]);
 
   const beforeUpload = ({ type, size }) => {
     const isJpgOrPng =
@@ -26,7 +37,10 @@ const Uploader = () => {
       formData.append("image", file);
       const res = await fetchUploadImg(formData);
       if (res.message === "OK") {
-        setFileList([...fileList, { url: res.data.url }]);
+        const list = [...fileList, { url: res.data.url }];
+        setFileList(list);
+        fileChange(list);
+        cacheImageList.current = list;
       } else {
         message.error(`${res.message}`);
       }
@@ -39,6 +53,7 @@ const Uploader = () => {
       accept="image/*"
       listType="picture-card"
       showUploadList
+      maxCount={coverType}
       customRequest={handleUpload}
       fileList={fileList}
       beforeUpload={beforeUpload}
