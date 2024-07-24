@@ -24,12 +24,18 @@ const Publish = () => {
   };
 
   const handleFinish = async (formValue) => {
-    console.log(formValue);
+    const { channel_id, content, title, type, image } = formValue;
+    // 校验图片数量和选择的类型是否一致
+    const imageList = image ? image : [];
+    if (image.length !== coverType)
+      return message.warning("图片类型和数量不一致");
     const data = {
-      ...formValue,
+      channel_id,
+      content,
+      title,
       cover: {
-        type: 0,
-        images: [],
+        type,
+        images: imageList.map((item) => item.url),
       },
     };
     try {
@@ -114,11 +120,13 @@ const Publish = () => {
               </Radio.Group>
             </Form.Item>
             {coverType > 0 && (
-              <Uploader
-                name="image"
-                fileChange={fileChange}
-                coverType={coverType}
-              />
+              <Form.Item name="image">
+                <Uploader
+                  name="image"
+                  fileChange={fileChange}
+                  coverType={coverType}
+                />
+              </Form.Item>
             )}
           </Form.Item>
           <Form.Item

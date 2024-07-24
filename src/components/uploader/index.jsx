@@ -48,6 +48,14 @@ const Uploader = ({ coverType, fileChange }) => {
       message.error("上传图片失败");
     }
   };
+
+  // 移除图片
+  const handleRemove = (e) => {
+    const newList = fileList.filter((item) => item.url !== e.url);
+    setFileList(newList);
+    fileChange(newList);
+    cacheImageList.current = newList;
+  };
   return (
     <Upload
       accept="image/*"
@@ -57,6 +65,7 @@ const Uploader = ({ coverType, fileChange }) => {
       customRequest={handleUpload}
       fileList={fileList}
       beforeUpload={beforeUpload}
+      onRemove={handleRemove}
     >
       <div>
         <PlusOutlined />
