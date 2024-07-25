@@ -14,3 +14,8 @@ export const fetchSubmitArticle = (data) => {
 export const fetchUploadImg = (image) => {
   return http.postForm("/upload", image);
 };
+
+// 获取文章列表
+export const fetchGetArticles = (data) => {
+  return http.get("/mp/articles", data);
+};

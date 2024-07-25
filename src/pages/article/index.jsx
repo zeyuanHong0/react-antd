@@ -10,11 +10,15 @@ import {
   Table,
   Tag,
   Space,
+  message,
 } from "antd";
 import locale from "antd/es/date-picker/locale/zh_CN";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import Pagination from "@/components/pagination";
+import { fetchGetArticles } from "@/api/article";
 import img404 from "@/assets/images/error.png";
 import useChannel from "@/hooks/useChannel";
+import { useEffect, useState } from "react";
 const { RangePicker } = DatePicker;
 
 const Article = () => {
@@ -89,6 +93,41 @@ const Article = () => {
       title: "wkwebview离线化加载h5资源解决方案",
     },
   ];
+
+  const onFinish = (formValue) => {
+    console.log(formValue);
+    const { status, channel_id, date } = formValue;
+  };
+
+  // 获取列表
+  const [isListLoading, setIsListLoading] = useState(false);
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [total, setTotal] = useState(0);
+  const [list, setList] = useState([]);
+  const handleGetList = async () => {
+    setIsListLoading(true);
+    try {
+      const data = {
+        page: pageNum,
+        per_page: pageSize,
+      };
+      const res = await fetchGetArticles(data);
+      if (res.message === "OK") {
+        setList(res.data.results);
+      } else {
+        message.error(`${res.message}`);
+      }
+    } catch (error) {
+      message.error("获取文章列表失败");
+    } finally {
+      setIsListLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleGetList();
+  }, []);
   return (
     <div>
       <Card
@@ -102,7 +141,7 @@ const Article = () => {
         }
         style={{ marginBottom: 20 }}
       >
-        <Form initialValues={{ status: "" }}>
+        <Form initialValues={{ status: "" }} onFinish={onFinish}>
           <Form.Item label="状态" name="status">
             <Radio.Group>
               <Radio value={""}>全部</Radio>
@@ -133,8 +172,17 @@ const Article = () => {
         </Form>
       </Card>
       {/*    列表    */}
-      <Card title={`根据筛选条件共查询到 count 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={data} />
+      <Card title={`根据筛选条件共查询到 ${total} 条结果：`}>
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={list}
+          pagination={false}
+          loading={isListLoading}
+        />
+        <div style={{ marginTop: 20 }}>
+          <Pagination pageNum={pageNum} total={total} />
+        </div>
       </Card>
     </div>
   );
