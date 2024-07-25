@@ -15,8 +15,6 @@ import locale from "antd/es/date-picker/locale/zh_CN";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import img404 from "@/assets/images/error.png";
 import useChannel from "@/hooks/useChannel";
-
-const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Article = () => {
