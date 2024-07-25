@@ -14,11 +14,12 @@ import {
 import { Link } from "react-router-dom";
 import Editor from "@/components/editor";
 import Uploader from "@/components/uploader";
-import { fetchGetChannels, fetchSubmitArticle } from "@/api/article";
+import { fetchSubmitArticle } from "@/api/article";
+import useChannel from "@/hooks/useChannel";
 
 const Publish = () => {
   const [form] = Form.useForm();
-  const [channelSelectList, setChannelSelectList] = useState([]);
+  const { channels } = useChannel();
   const handleEditorChange = (htmlStr) => {
     form.setFieldsValue({ content: htmlStr });
   };
@@ -60,19 +61,6 @@ const Publish = () => {
     form.setFieldsValue({ image: imageList });
   };
 
-  // 获取频道下拉列表
-  const handleGetChannels = async () => {
-    try {
-      const res = await fetchGetChannels();
-      setChannelSelectList(res.data.channels);
-    } catch (error) {
-      message.error("获取频道列表失败");
-    }
-  };
-
-  useEffect(() => {
-    handleGetChannels();
-  }, []);
   return (
     <div className="publish">
       <Card
@@ -107,7 +95,7 @@ const Publish = () => {
             <Select
               placeholder="请选择文章频道"
               style={{ width: 400 }}
-              options={channelSelectList}
+              options={channels}
               fieldNames={{ label: "name", value: "id" }}
             />
           </Form.Item>

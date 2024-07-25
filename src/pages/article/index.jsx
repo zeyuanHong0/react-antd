@@ -14,11 +14,13 @@ import {
 import locale from "antd/es/date-picker/locale/zh_CN";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import img404 from "@/assets/images/error.png";
+import useChannel from "@/hooks/useChannel";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Article = () => {
+  const { channels } = useChannel();
   // 准备列数据
   const columns = [
     {
@@ -114,12 +116,10 @@ const Article = () => {
           <Form.Item label="频道" name="channel_id">
             <Select
               placeholder="请选择文章频道"
-              defaultValue="lucy"
               style={{ width: 120 }}
-            >
-              <Option value="jack">Jack</Option>
-              <Option value="lucy">Lucy</Option>
-            </Select>
+              options={channels}
+              fieldNames={{ label: "name", value: "id" }}
+            />
           </Form.Item>
 
           <Form.Item label="日期" name="date">
