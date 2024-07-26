@@ -21,9 +21,15 @@ import useChannel from "@/hooks/useChannel";
 import { useEffect, useState } from "react";
 const { RangePicker } = DatePicker;
 
+const statusMap = {
+  0: "default", //草稿
+  1: "warning", //待审核
+  2: "success", //审核通过
+  3: "error", //审核失败
+};
+
 const Article = () => {
   const { channels } = useChannel();
-
   const columns = [
     {
       title: "封面",
@@ -43,7 +49,7 @@ const Article = () => {
     {
       title: "状态",
       dataIndex: "status",
-      render: (data) => <Tag color="green">审核通过</Tag>,
+      render: (data) => <Tag color={statusMap[data]}>审核通过</Tag>,
     },
     {
       title: "发布时间",

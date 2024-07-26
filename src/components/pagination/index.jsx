@@ -2,7 +2,6 @@ import { Pagination } from "antd";
 
 const _Pagination = ({ pageNum, total, changePage }) => {
   const handlePageChange = (num, size) => {
-    console.log(num, size);
     changePage(num, size);
   };
   return (
