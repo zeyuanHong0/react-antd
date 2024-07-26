@@ -17,5 +17,5 @@ export const fetchUploadImg = (image) => {
 
 // 获取文章列表
 export const fetchGetArticles = (data) => {
-  return http.get("/mp/articles", data);
+  return http.get("/mp/articles", { params: data });
 };

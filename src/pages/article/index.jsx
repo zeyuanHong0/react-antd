@@ -23,7 +23,7 @@ const { RangePicker } = DatePicker;
 
 const Article = () => {
   const { channels } = useChannel();
-  // 准备列数据
+
   const columns = [
     {
       title: "封面",
@@ -78,7 +78,7 @@ const Article = () => {
       },
     },
   ];
-  // 准备表格body数据
+
   const data = [
     {
       id: "8218",
@@ -99,22 +99,31 @@ const Article = () => {
     const { status, channel_id, date } = formValue;
   };
 
+  // 改变分页
+  const changePage = (num, size) => {
+    setPageNum(num);
+    setPageSize(size);
+    handleGetList(num, size);
+  };
+
   // 获取列表
   const [isListLoading, setIsListLoading] = useState(false);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [total, setTotal] = useState(0);
   const [list, setList] = useState([]);
-  const handleGetList = async () => {
+  const handleGetList = async (num, size) => {
     setIsListLoading(true);
     try {
       const data = {
-        page: pageNum,
-        per_page: pageSize,
+        channel_id: "",
+        page: num ? num : pageNum,
+        per_page: size ? size : pageSize,
       };
       const res = await fetchGetArticles(data);
       if (res.message === "OK") {
         setList(res.data.results);
+        setTotal(res.data.total_count);
       } else {
         message.error(`${res.message}`);
       }
@@ -181,7 +190,7 @@ const Article = () => {
           loading={isListLoading}
         />
         <div style={{ marginTop: 20 }}>
-          <Pagination pageNum={pageNum} total={total} />
+          <Pagination pageNum={pageNum} total={total} changePage={changePage} />
         </div>
       </Card>
     </div>
