@@ -85,35 +85,31 @@ const Article = () => {
     },
   ];
 
-  const data = [
-    {
-      id: "8218",
-      comment_count: 0,
-      cover: {
-        images: [],
-      },
-      like_count: 0,
-      pubdate: "2019-03-11 09:00:00",
-      read_count: 2,
-      status: 2,
-      title: "wkwebview离线化加载h5资源解决方案",
-    },
-  ];
-
   const onFinish = (formValue) => {
     console.log(formValue);
     const { status, channel_id, date } = formValue;
+    setSearchValue({
+      status,
+      channel_id,
+      begin_pubdate: date ? date[0].format("YYYY-MM-DD") : null,
+      end_pubdate: date ? date[1].format("YYYY-MM-DD") : null,
+    });
   };
 
   // 改变分页
   const changePage = (num, size) => {
     setPageNum(num);
     setPageSize(size);
-    handleGetList(num, size);
   };
 
   // 获取列表
   const [isListLoading, setIsListLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState({
+    status: "",
+    channel_id: "",
+    begin_pubdate: "",
+    end_pubdate: "",
+  });
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const [total, setTotal] = useState(0);
@@ -122,7 +118,7 @@ const Article = () => {
     setIsListLoading(true);
     try {
       const data = {
-        channel_id: "",
+        ...searchValue,
         page: num ? num : pageNum,
         per_page: size ? size : pageSize,
       };
@@ -142,7 +138,7 @@ const Article = () => {
 
   useEffect(() => {
     handleGetList();
-  }, []);
+  }, [searchValue, pageNum, pageSize]);
   return (
     <div>
       <Card
