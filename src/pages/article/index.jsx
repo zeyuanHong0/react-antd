@@ -11,21 +11,22 @@ import {
   Tag,
   Space,
   message,
+  Popconfirm,
 } from "antd";
 import locale from "antd/es/date-picker/locale/zh_CN";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import Pagination from "@/components/pagination";
-import { fetchGetArticles } from "@/api/article";
+import { fetchGetArticles, fetchDeleteArticle } from "@/api/article";
 import img404 from "@/assets/images/error.png";
 import useChannel from "@/hooks/useChannel";
 import { useEffect, useState } from "react";
 const { RangePicker } = DatePicker;
 
 const statusMap = {
-  0: "default", //草稿
-  1: "warning", //待审核
-  2: "success", //审核通过
-  3: "error", //审核失败
+  0: <Tag color="default">草稿</Tag>, //草稿
+  1: <Tag color="warning">待审核</Tag>, //待审核
+  2: <Tag color="success">审核通过</Tag>, //审核通过
+  3: <Tag color="error">审核失败</Tag>, //审核失败
 };
 
 const Article = () => {
@@ -49,7 +50,7 @@ const Article = () => {
     {
       title: "状态",
       dataIndex: "status",
-      render: (data) => <Tag color={statusMap[data]}>审核通过</Tag>,
+      render: (data) => statusMap[data],
     },
     {
       title: "发布时间",
@@ -73,17 +74,39 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
-            <Button
-              type="primary"
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-            />
+            <Popconfirm
+              title="提示"
+              description="确定删除该文章吗?"
+              onConfirm={() => confirmDelete(data)}
+              onCancel={cancel}
+              okText="确定"
+              cancelText="取消"
+            >
+              <Button
+                type="primary"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              />
+            </Popconfirm>
           </Space>
         );
       },
     },
   ];
+
+  const confirmDelete = ({ id }) => {
+    try {
+      const res = fetchDeleteArticle(id);
+    } catch (error) {
+      message.error("删除文章失败");
+    }
+  };
+
+  const cancel = (e) => {
+    console.log(e);
+    message.error("Click on No");
+  };
 
   const onFinish = (formValue) => {
     console.log(formValue);
