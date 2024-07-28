@@ -19,3 +19,8 @@ export const fetchUploadImg = (image) => {
 export const fetchGetArticles = (data) => {
   return http.get("/mp/articles", { params: data });
 };
+
+// 删除文章
+export const fetchDeleteArticle = (id) => {
+  return http.delete(`/mp/articles/${id}`);
+}

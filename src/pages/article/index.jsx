@@ -95,17 +95,22 @@ const Article = () => {
     },
   ];
 
-  const confirmDelete = ({ id }) => {
+  const confirmDelete = async ({ id }) => {
     try {
-      const res = fetchDeleteArticle(id);
+      const res = await fetchDeleteArticle(id);
+      if (res.message === "OK") {
+        message.success("删除文章成功");
+        handleGetList();
+      } else {
+        message.error(`${res.message}`);
+      }
     } catch (error) {
       message.error("删除文章失败");
     }
   };
 
-  const cancel = (e) => {
-    console.log(e);
-    message.error("Click on No");
+  const cancel = () => {
+    message.info("取消删除");
   };
 
   const onFinish = (formValue) => {
