@@ -14,7 +14,7 @@ import {
 import { Link } from "react-router-dom";
 import Editor from "@/components/editor";
 import Uploader from "@/components/uploader";
-import { fetchSubmitArticle } from "@/api/article";
+import { fetchSubmitArticle, fetchArticleInfo } from "@/api/article";
 import useChannel from "@/hooks/useChannel";
 
 const Publish = () => {
