@@ -73,7 +73,12 @@ const Article = () => {
       render: (data) => {
         return (
           <Space size="middle">
-            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Button
+              type="primary"
+              shape="circle"
+              icon={<EditOutlined />}
+              href={`/publish?id=${data.id}`}
+            />
             <Popconfirm
               title="提示"
               description="确定删除该文章吗?"
