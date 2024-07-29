@@ -23,4 +23,9 @@ export const fetchGetArticles = (data) => {
 // 删除文章
 export const fetchDeleteArticle = (id) => {
   return http.delete(`/mp/articles/${id}`);
-}
+};
+
+// 获取文章详情
+export const fetchArticleInfo = (id) => {
+  return http.get(`/mp/articles/${id}`);
+};
