@@ -1,5 +1,5 @@
 import "./index.scss";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   Breadcrumb,
@@ -14,7 +14,11 @@ import {
 import { Link } from "react-router-dom";
 import Editor from "@/components/editor";
 import Uploader from "@/components/uploader";
-import { fetchSubmitArticle, fetchArticleInfo } from "@/api/article";
+import {
+  fetchSubmitArticle,
+  fetchArticleInfo,
+  fetchEditArticle,
+} from "@/api/article";
 import { useChannel, useQuery } from "@/hooks";
 
 const Publish = () => {
@@ -22,13 +26,11 @@ const Publish = () => {
   const { channels } = useChannel();
   const query = useQuery();
 
-  const [isEdit, setIsEdit] = useState(false); // 是否是编辑
   const [articleId, setArticleId] = useState(""); // 文章id
   useEffect(() => {
     const id = query.get("id");
-    setArticleId(id);
     if (id) {
-      setIsEdit(true);
+      setArticleId(id);
       //获取详情
       handleGetInfo(id);
     }
@@ -37,11 +39,12 @@ const Publish = () => {
     form.setFieldsValue({ content: htmlStr });
   };
 
-  const handleFinish = async (formValue) => {
+  const handleFinish = (formValue) => {
+    console.log(formValue);
     const { channel_id, content, title, type, image } = formValue;
     // 校验图片数量和选择的类型是否一致
     const imageList = image ? image : [];
-    if (image.length !== coverType)
+    if (imageList.length !== coverType)
       return message.warning("图片类型和数量不一致");
     const data = {
       channel_id,
@@ -52,6 +55,16 @@ const Publish = () => {
         images: imageList.map((item) => item.url),
       },
     };
+    // 判断是不是编辑
+    if (articleId) {
+      handleEdit({ ...data, pub_date, id: articleId });
+    } else {
+      handleSubmit(data);
+    }
+  };
+
+  // 发布文章
+  const handleSubmit = async (data) => {
     try {
       const res = await fetchSubmitArticle(data);
       if (res.message === "OK") {
@@ -61,6 +74,20 @@ const Publish = () => {
       }
     } catch (error) {
       message.error("发布文章失败");
+    }
+  };
+
+  // 编辑文章
+  const handleEdit = async (data) => {
+    try {
+      const res = await fetchEditArticle(data);
+      if (res.message === "OK") {
+        message.success("编辑文章成功");
+      } else {
+        message.error(`${res.message}`);
+      }
+    } catch (error) {
+      message.error("编辑文章失败");
     }
   };
 
@@ -76,13 +103,15 @@ const Publish = () => {
 
   const [editFileList, setEditFileList] = useState([]);
   const [editContent, setEditContent] = useState("");
+  const [pub_date, setPub_date] = useState("");
   // 获取详情
   const handleGetInfo = async (id) => {
     try {
       const res = await fetchArticleInfo(id);
       if (res.message === "OK") {
-        const { channel_id, content, cover, title } = res.data;
+        const { channel_id, content, cover, title, pub_date } = res.data;
         const imageList = cover.images.map((item) => ({ url: item }));
+        setPub_date(pub_date);
         setEditContent(content);
         setEditFileList(imageList);
         setCoverType(cover.type);
@@ -166,7 +195,7 @@ const Publish = () => {
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
               <Button size="large" type="primary" htmlType="submit">
-                发布文章
+                {articleId ? "更新文章" : "发布文章"}
               </Button>
             </Space>
           </Form.Item>

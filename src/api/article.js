@@ -29,3 +29,8 @@ export const fetchDeleteArticle = (id) => {
 export const fetchArticleInfo = (id) => {
   return http.get(`/mp/articles/${id}`);
 };
+
+// 编辑文章
+export const fetchEditArticle = (data) => {
+  return http.put(`/mp/articles/${data.id}?draft=false`, data);
+};
