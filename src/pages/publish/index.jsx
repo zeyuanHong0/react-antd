@@ -1,5 +1,5 @@
 import "./index.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Card,
   Breadcrumb,
@@ -15,11 +15,24 @@ import { Link } from "react-router-dom";
 import Editor from "@/components/editor";
 import Uploader from "@/components/uploader";
 import { fetchSubmitArticle, fetchArticleInfo } from "@/api/article";
-import useChannel from "@/hooks/useChannel";
+import { useChannel, useQuery } from "@/hooks";
 
 const Publish = () => {
   const [form] = Form.useForm();
   const { channels } = useChannel();
+  const query = useQuery();
+
+  const [isEdit, setIsEdit] = useState(false); // 是否是编辑
+  const [articleId, setArticleId] = useState(""); // 文章id
+  useEffect(() => {
+    const id = query.get("id");
+    setArticleId(id);
+    if (id) {
+      setIsEdit(true);
+      //获取详情
+      handleGetInfo(id);
+    }
+  }, []);
   const handleEditorChange = (htmlStr) => {
     form.setFieldsValue({ content: htmlStr });
   };
@@ -59,6 +72,31 @@ const Publish = () => {
 
   const fileChange = (imageList) => {
     form.setFieldsValue({ image: imageList });
+  };
+
+  const [editFileList, setEditFileList] = useState([]);
+  const [editContent, setEditContent] = useState("");
+  // 获取详情
+  const handleGetInfo = async (id) => {
+    try {
+      const res = await fetchArticleInfo(id);
+      if (res.message === "OK") {
+        const { channel_id, content, cover, title } = res.data;
+        const imageList = cover.images.map((item) => ({ url: item }));
+        setEditContent(content);
+        setEditFileList(imageList);
+        setCoverType(cover.type);
+        form.setFieldsValue({
+          channel_id,
+          content,
+          title,
+          type: cover.type,
+          image: imageList,
+        });
+      }
+    } catch (error) {
+      message.error("获取文章详情失败");
+    }
   };
 
   return (
@@ -110,9 +148,9 @@ const Publish = () => {
             {coverType > 0 && (
               <Form.Item name="image">
                 <Uploader
-                  name="image"
                   fileChange={fileChange}
                   coverType={coverType}
+                  editFileList={editFileList}
                 />
               </Form.Item>
             )}
@@ -122,7 +160,7 @@ const Publish = () => {
             name="content"
             rules={[{ required: true, message: "请输入文章内容" }]}
           >
-            <Editor getHtml={handleEditorChange} />
+            <Editor getHtml={handleEditorChange} editContent={editContent} />
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 4 }}>

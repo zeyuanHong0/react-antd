@@ -4,9 +4,14 @@ import { PlusOutlined } from "@ant-design/icons";
 import { fetchUploadImg } from "@/api/article";
 import { useState, useRef, useEffect } from "react";
 
-const Uploader = ({ coverType, fileChange }) => {
+const Uploader = ({ coverType, fileChange, editFileList }) => {
   const [fileList, setFileList] = useState([]);
   const cacheImageList = useRef([]); // 缓存图片列表
+
+  useEffect(() => {
+    setFileList(editFileList);
+    cacheImageList.current = editFileList;
+  }, [editFileList]);
 
   useEffect(() => {
     if (coverType === 1) {

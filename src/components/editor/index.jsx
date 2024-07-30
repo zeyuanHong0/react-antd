@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Editor, Toolbar } from "@wangeditor/editor-for-react";
 import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor";
 
-const MyEditor = ({ getHtml }) => {
+const MyEditor = ({ getHtml, editContent }) => {
   const [editor, setEditor] = useState(null);
   const [html, setHtml] = useState("");
   // 工具栏配置
@@ -13,6 +13,11 @@ const MyEditor = ({ getHtml }) => {
   const editorConfig = {
     placeholder: "请输入内容...",
   };
+
+  // 详情内容返显
+  useEffect(() => {
+    setHtml(editContent);
+  }, [editContent]);
 
   useEffect(() => {
     return () => {
