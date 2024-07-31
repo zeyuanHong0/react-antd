@@ -1,7 +1,7 @@
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { useEffect, useState } from "react";
 import { Editor, Toolbar } from "@wangeditor/editor-for-react";
-import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor";
+// import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor";
 
 const MyEditor = ({ getHtml, editContent }) => {
   const [editor, setEditor] = useState(null);
